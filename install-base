@@ -41,7 +41,7 @@ if ! zoneadm -z ${zone} list >/dev/null 2>&1; then
 	exit 1
 fi
 if [ "$(dirname $0)" != "." ]; then
-	echo "ERROR: This script must be run from the imagetools directory." >&2
+	echo "ERROR: This script must be run from the zone image directory." >&2
 	exit 1
 fi
 

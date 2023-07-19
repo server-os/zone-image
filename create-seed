@@ -5,20 +5,19 @@
 #
 # Two arguments are required:
 #
-#  * a path to a built smartos-live repository
+#  * the path to a built server image repository
 #  * the name of the seed image to create
 #
 
-
 if [ $# -ne 2 ]; then
-	echo "usage: $0 <smartos-live> <seedname>" >&2
+	echo "usage: $0 <server-image> <seedname>" >&2
 	exit 2
 else
-	smartoslive=$1; shift
+	serverimage=$1; shift
 	protoname=$1; shift
 fi
 
-imagetoolsdir="$(dirname $0)"
+zoneimagedir="$(dirname $0)"
 
 set -ex
 
@@ -40,13 +39,8 @@ ln -s ./usr/bin /zones/${protoname}/root/bin
 #
 for dir in etc var
 do
-  rsync -av ${smartoslive}/proto/${dir} /zones/${protoname}/root/
+  rsync -av ${serverimage}/proto/${dir} /zones/${protoname}/root/
 done
-
-#
-# Apply overlays
-#
-rsync -av ${smartoslive}/overlay/generic/etc/ /zones/${protoname}/root/etc/
 
 #
 # Apply manual changes.
@@ -60,47 +54,43 @@ rsync -av ${smartoslive}/overlay/generic/etc/ /zones/${protoname}/root/etc/
 rm -f /zones/${protoname}/root/etc/rc2.d/S*
 rm -f /zones/${protoname}/root/etc/issue
 rm -f /zones/${protoname}/root/etc/cron.d/crontabs/root
-ed /zones/${protoname}/root/etc/profile <<EOF
-/bin.i386/
-s,/bin/i386,[ \`uname -p\` = \"i386\" ],
-w
-q
-EOF
+
 ed /zones/${protoname}/root/etc/passwd <<EOF
 /^lp/d
 /^gdm/d
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
+
 ed /zones/${protoname}/root/etc/shadow <<EOF
 /^lp/d
 /^gdm/d
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
+
 ed /zones/${protoname}/root/etc/group <<EOF
 /^lp/d
 /^gdm/d
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
+
 for file in group passwd
 do
   sort -t: -k3,3n /zones/${protoname}/root/etc/${file} >/tmp/${file} \
     && mv /tmp/${file} /zones/${protoname}/root/etc/${file}
 done
+
 ed /zones/${protoname}/root/etc/user_attr >/dev/null <<EOF
 /^lp/d
 /^admin/d
@@ -111,11 +101,11 @@ EOF
 #
 # Generate SVC repository.  Some manifests are missing, apply them manually.
 #
-${imagetoolsdir}/create-smf-repo ${smartoslive} ${imagetoolsdir}/include/manifests /tmp/repository.db
-#svcdir="${smartoslive}/projects/illumos/usr/src/cmd/svc"
-#for mf in ${smartoslive}/proto/lib/svc/manifest/system/boot-archive.xml \
-#          ${smartoslive}/overlay/generic/lib/svc/manifest/system/sysidtool.xml \
-#for mf in ${imagetoolsdir}/include/mdata.xml
+${zoneimagedir}/create-smf-repo ${serverimage} ${zoneimagedir}/include/manifests /tmp/repository.db
+#svcdir="${serverimage}/projects/illumos/usr/src/cmd/svc"
+#for mf in ${serverimage}/proto/lib/svc/manifest/system/boot-archive.xml \
+#          ${serverimage}/overlay/generic/lib/svc/manifest/system/sysidtool.xml \
+#for mf in ${zoneimagedir}/include/mdata.xml
 #do
 #  env SVCCFG_REPOSITORY=/tmp/repository.db \
 #      SVCCFG_CONFIGD_PATH=${svcdir}/configd/svc.configd-native \
@@ -125,8 +115,8 @@ ${imagetoolsdir}/create-smf-repo ${smartoslive} ${imagetoolsdir}/include/manifes
 # Import our fake mdata.xml to satisfy SDC 6.5 and 7.0
 #
 #env SVCCFG_REPOSITORY=/tmp/repository.db \
-#    SVCCFG_CONFIGD_PATH=${smartoslive}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native \
-#  ${smartoslive}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native import ${imagetoolsdir}/include/mdata.xml
+#    SVCCFG_CONFIGD_PATH=${serverimage}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native \
+#  ${serverimage}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native import ${zoneimagedir}/include/mdata.xml
 cp /tmp/repository.db /zones/${protoname}/root/etc/svc/repository.db
 
 #
@@ -149,13 +139,13 @@ do
 		fi
 		;;
 	esac
-done < ${smartoslive}/manifest.gen
+done < ${serverimage}/manifest.gen
 
 #
 # Do just enough zoneinit stuff to get a zone to boot, this will be overwritten
 # later when we do a proper smtools install.
 #
 mkdir -p /zones/${protoname}/root/var/zoneinit
-cp ${imagetoolsdir}/include/zoneinit.json /zones/${protoname}/root/var/zoneinit
-cp ${imagetoolsdir}/include/S99final /zones/${protoname}/root/etc/rc2.d/S99final
+cp ${zoneimagedir}/include/zoneinit.json /zones/${protoname}/root/var/zoneinit
+cp ${zoneimagedir}/include/S99final /zones/${protoname}/root/etc/rc2.d/S99final
 chmod 0755 /zones/${protoname}/root/etc/rc2.d/S99final
