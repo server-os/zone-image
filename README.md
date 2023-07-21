@@ -13,7 +13,7 @@ Note: The zone image has to be built from within the global zone!
 
 In the global zone, navigate to the zone-image repo on the build server zone:
 
-    $ cd zones/<build-server-uuid>/root/root/zone-image
+    $ cd /zones/<build-server-uuid>/root/root/zone-image
 
 And create the seed image:
 
