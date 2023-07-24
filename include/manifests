@@ -70,7 +70,7 @@ network/nfs/mapid.xml		disabled
 network/nfs/status.xml		disabled
 # network/ipmievd.xml
 network/nis/client.xml		disabled
-network/rpc/rex.xml		disabled
+# network/rpc/rex.xml		disabled
 # network/http-apache22.xml
 # system/consolekit.xml
 # system/device/devices-audio.xml
