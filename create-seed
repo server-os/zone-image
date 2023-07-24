@@ -72,7 +72,6 @@ ed /zones/${protoname}/root/etc/passwd <<EOF
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
@@ -82,7 +81,6 @@ ed /zones/${protoname}/root/etc/shadow <<EOF
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
@@ -92,7 +90,6 @@ ed /zones/${protoname}/root/etc/group <<EOF
 /^mysql/d
 /^openldap/d
 /^webservd/d
-/^postgres/d
 w
 q
 EOF
