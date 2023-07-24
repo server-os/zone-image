@@ -8,7 +8,7 @@
   "published_at": "@DATESTAMP@",
   "owner": "00000000-0000-0000-0000-000000000000",
   "public": "true",
-  "os": "smartos",
+  "os": "server-os",
   "urn": "sdc:sdc:@NAME@:@VERSION@",
   "files": [
     {

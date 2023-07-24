@@ -6,10 +6,10 @@ Tools for creating SmartOS images.
 ## Creating seed images
 
 Seed images are the absolute baseline of a SmartOS image.  They are created
-from files produced by a smartos-live build, containing the original `/etc`,
+from files produced by a server-image build, containing the original `/etc`,
 `/var` and SMF manifest database.
 
-First, you need to perform a smartos-live build, as described in the wiki
+First, you need to perform a server-image build, as described in the wiki
 page:
 
   http://wiki.smartos.org/display/DOC/Building+SmartOS+on+SmartOS
@@ -19,7 +19,7 @@ produce a `seed-20141030` image off that baseline.
 
 Then from the global zone:
 
-    $ ./create-seed /path/to/smartos-live seed-20141030
+    $ ./create-seed /path/to/server-image seed-20141030
 
 This will create a `zones/seed-20141030` file system containing the seed files.
 

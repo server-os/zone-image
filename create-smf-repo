@@ -21,6 +21,7 @@
 #
 # Copyright (c) 2012 Joyent, Inc.  All rights reserved.
 # Copyright (c) 2022 MNX Cloud.  All rights reserved.
+# Copyright (c) 2023 ServerOS.  All rights reserved.
 #
 
 #
@@ -31,26 +32,26 @@
 #
 # Changes for this 'imagetools' version:
 #
-#  * Use a configurable location to the 'smartos-live' build area
+#  * Use a configurable location to the 'server-image' build area
 #  * Copy in manifests from multiple locations, and show where they came from.
 #
 
 if [ $# -ne 3 ]; then
-	echo "usage: $0 <smartoslive> <manifests> <output>" >&2
+	echo "usage: $0 <server-image> <manifests> <output>" >&2
 	exit 2
 else
-	SMARTOS_LIVE=$1; shift
+	server_image=$1; shift
 	MANIFEST_LIST=$1; shift
 	OUTPUT=$1; shift
 fi
 
-SVCCFG="${SMARTOS_LIVE}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native"
-CONFIGD="${SMARTOS_LIVE}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native"
-#MANIFEST_LIST="${SMARTOS_LIVE}/overlay/generic/usr/lib/brand/joyent/manifests"
+SVCCFG="${server_image}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native"
+CONFIGD="${server_image}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native"
+#MANIFEST_LIST="${server_image}/overlay/generic/usr/lib/brand/joyent/manifests"
 MANIFESTS_LOCAL="$(dirname $0)/manifest"
-MANIFESTS_GENERIC="${SMARTOS_LIVE}/overlay/generic/lib/svc/manifest"
-MANIFESTS_PROTO="${SMARTOS_LIVE}/proto/lib/svc/manifest"
-MANIFESTS_SMARTOS="${SMARTOS_LIVE}/overlay/smartos/lib/svc/manifest"
+MANIFESTS_GENERIC="${server_image}/overlay/generic/lib/svc/manifest"
+MANIFESTS_PROTO="${server_image}/proto/lib/svc/manifest"
+MANIFESTS_SMARTOS="${server_image}/overlay/smartos/lib/svc/manifest"
 TMPFILE="/tmp/$(basename $0).$$"
 
 function fail

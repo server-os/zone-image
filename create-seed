@@ -1,20 +1,19 @@
 #!/bin/bash
 #
-# This is a script to create an initial 'seed' image based on pristine
-# sources.  User images will be built on top of this one.
+# Creates a seed image from a server-image build.
 #
-# Two arguments are required:
+# Requires:
 #
-#  * a path to a built smartos-live repository
-#  * the name of the seed image to create
+#  * path to pre-built server-image repository
+#  * name of the seed image to create
 #
 
 
 if [ $# -ne 2 ]; then
-	echo "usage: $0 <smartos-live> <seedname>" >&2
+	echo "usage: $0 <server-image> <seed-name>" >&2
 	exit 2
 else
-	smartoslive=$1; shift
+	server_image=$1; shift
 	protoname=$1; shift
 fi
 
@@ -40,7 +39,7 @@ ln -s ./usr/bin /zones/${protoname}/root/bin
 #
 for dir in etc var
 do
-  rsync -av ${smartoslive}/proto/${dir} /zones/${protoname}/root/
+  rsync -av ${server_image}/proto/${dir} /zones/${protoname}/root/
 done
 
 #
@@ -103,10 +102,10 @@ EOF
 #
 # Generate SVC repository.  Some manifests are missing, apply them manually.
 #
-${imagetoolsdir}/create-smf-repo ${smartoslive} ${imagetoolsdir}/include/manifests /tmp/repository.db
-#svcdir="${smartoslive}/projects/illumos/usr/src/cmd/svc"
-#for mf in ${smartoslive}/proto/lib/svc/manifest/system/boot-archive.xml \
-#          ${smartoslive}/overlay/generic/lib/svc/manifest/system/sysidtool.xml \
+${imagetoolsdir}/create-smf-repo ${server_image} ${imagetoolsdir}/include/manifests /tmp/repository.db
+#svcdir="${server_image}/projects/illumos/usr/src/cmd/svc"
+#for mf in ${server_image}/proto/lib/svc/manifest/system/boot-archive.xml \
+#          ${server_image}/overlay/generic/lib/svc/manifest/system/sysidtool.xml \
 #for mf in ${imagetoolsdir}/include/mdata.xml
 #do
 #  env SVCCFG_REPOSITORY=/tmp/repository.db \
@@ -117,8 +116,8 @@ ${imagetoolsdir}/create-smf-repo ${smartoslive} ${imagetoolsdir}/include/manifes
 # Import our fake mdata.xml to satisfy SDC 6.5 and 7.0
 #
 #env SVCCFG_REPOSITORY=/tmp/repository.db \
-#    SVCCFG_CONFIGD_PATH=${smartoslive}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native \
-#  ${smartoslive}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native import ${imagetoolsdir}/include/mdata.xml
+#    SVCCFG_CONFIGD_PATH=${server_image}/projects/illumos/usr/src/cmd/svc/configd/svc.configd-native \
+#  ${server_image}/projects/illumos/usr/src/cmd/svc/svccfg/svccfg-native import ${imagetoolsdir}/include/mdata.xml
 cp /tmp/repository.db /zones/${protoname}/root/etc/svc/repository.db
 
 #
@@ -141,7 +140,7 @@ do
 		fi
 		;;
 	esac
-done < ${smartoslive}/manifest.gen
+done < ${server_image}/manifest.gen
 
 #
 # Do just enough zoneinit stuff to get a zone to boot, this will be overwritten
