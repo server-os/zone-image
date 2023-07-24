@@ -1,3 +1,36 @@
+# Server OS Zone Image
+
+Builds the image used to create ServerOS zones.
+
+## Prerequisites
+
+- ServerOS based build server is available with server-image and zone-image repos
+- The Server Image has been built (see https://github.com/server-os/server-image)
+
+Note: The zone image has to be built from within the global zone!
+
+## Create seed image
+
+In the global zone, navigate to the zone-image repo on the build server zone:
+
+    $ cd /zones/<build-server-uuid>/root/root/zone-image
+
+And create the seed image:
+
+    $ ./create-seed ../server-image zone-image-seed
+
+Install the seed image:
+
+    $ imgadm install -m ./output/zone-image-seed.json -f ./output/zone-image-seed.zfs.gz
+
+Cleanup the seed image:
+
+    $ zfs destroy zones/zone-image-seed
+
+
+
+# Original content:
+
 imagetools
 ==========
 
