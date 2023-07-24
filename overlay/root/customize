@@ -139,10 +139,11 @@ EOF
 
 echo "	- creating /etc/release"
 cat >/etc/release <<EOF
-                                SmartOS x86_64
+                                ServerOS x86_64
               Copyright 2010 Sun Microsystems, Inc.  All Rights Reserved.
                    Copyright 2015 Joyent, Inc.  All Rights Reserved.
                     Copyright 2022 MNX Cloud.  All Rights Reserved.
+                    Copyright 2023 ServerOS.  All Rights Reserved.
                         Use is subject to license terms.
                    See `uname -v` for assembly date and time.
 EOF
@@ -242,7 +243,7 @@ if pkg_info -qE postfix; then
 	cat >>${IMAGE_SYSCONFDIR}/postfix/main.cf <<EOF
 
 #
-# SmartOS customisations
+# ServerOS customisations
 #
 alias_database = hash:${IMAGE_SYSCONFDIR}/postfix/aliases
 alias_maps = \$alias_database
@@ -420,7 +421,7 @@ fi
 
 echo "	- add pkgsrc tools to exec_attr"
 cat >>/etc/security/exec_attr <<EOF
-# SmartOS-specific execution attributes
+# ServerOS-specific execution attributes
 Software Installation:suser:cmd:::${IMAGE_PREFIX}/bin/gmake:uid=0
 Software Installation:suser:cmd:::${IMAGE_PREFIX}/bin/make:uid=0
 Software Installation:suser:cmd:::${IMAGE_PREFIX}/bin/pkgin:uid=0

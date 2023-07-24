@@ -1,11 +1,11 @@
 imagetools
 ==========
 
-Tools for creating SmartOS images.
+Tools for creating ServerOS images.
 
 ## Creating seed images
 
-Seed images are the absolute baseline of a SmartOS image.  They are created
+Seed images are the absolute baseline of a ServerOS image.  They are created
 from files produced by a server-image build, containing the original `/etc`,
 `/var` and SMF manifest database.
 

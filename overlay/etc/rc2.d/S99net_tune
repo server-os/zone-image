@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Apply recommended SmartOS TCP tunings
+# Apply recommended ServerOS TCP tunings
 #
 
 send_buffer=128000
